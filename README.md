@@ -2,7 +2,7 @@
 
 This is a basic ESP32 (ESP32-WROOM-32 module) with LAN8720A PHY project
 intended to work mostly as an ESP-NOW to (wired) MQTT gateway. CH340C-based
-ethernet is included.
+USB is included.
 
 ![Photo of working board](Pictures/ESP32-Ethgate.jpg)
 
