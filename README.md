@@ -30,3 +30,7 @@ configuration:
 ETH.begin(ETH_ADDR, ETH_POWER_PIN, ETH_MDC_PIN, ETH_MDIO_PIN,
 	ETH_TYPE, ETH_CLK_MODE)
 ```
+
+I flash mine with the ESP32 clock set at 80MHz, which seems to be
+more stable at 100Mbps connection speeds and draws approximately 25%
+less power.
