@@ -1,10 +1,12 @@
+part = "all";	// [bottom, top, antenna]
+
 screwd = 3;
-screwheadd = 6;
+screwheadd = 7;
 w = 1.6;
-pcbx = 38;
-x = 38 + screwheadd + w*2;
-ay = 5.5;
-y = 72 + ay;	// incl antenna
+pcbx = 39;
+x = pcbx + screwheadd + w*2;
+ay = 8;
+y = 72.5 + ay;	// incl antenna
 z = 23;
 bz = 6;	// bottom height
 pcbt = 2;
@@ -41,9 +43,9 @@ module scube( v, r=2 ) {
 module antenna(solid=0) {
 	difference() {
 		union() {
-			translate([-antennaod/2,-antennaod/2,w*3])
+			translate([-antennaod/2,-antennaod/2,w*3+0.5])
 				scube([antennaod,antennaod,antennal],1);
-			cylinder(d=antennacd,h=w*3);
+			cylinder(d=antennacd,h=w*3+1);
 			translate([-antennaod/2,-antennaod/2,0])
 				scube([antennaod,antennaod,w*2],1);
 		}
@@ -64,22 +66,24 @@ module screw(hd=screwheadd,sd=screwd,taper=0,clear=0) {
 	
 	// extra clearance for the first bit
 	if( clear ) {
-		cylinder(d=sd+1, h=z+clear);
+		cylinder(d=sd+1, h=bz+clear);
 	}
 }
 
 module vent() {
 	hull() {
-		rotate([0,90,0]) cylinder(d=ventd,h=x*2);
+		rotate([0,90,0]) cylinder(d=ventd,h=x+w*4,$fn=6);
 		translate([0,0,z/5]) rotate([0,90,0])
-			cylinder(d=ventd,h=x*2);
+			cylinder(d=ventd,h=x+w*4,$fn=6);
+		translate([(x+w*3)/2,0,0])  rotate([0,90,0])
+			scale([1,5,1]) cylinder(d=ventd,h=w,$fn=6);
 	}
 }
 
 module vertvent() {
 	hull() {
-		cylinder(d=ventd,h=z);
-		translate([pcbx*.6,0,0]) cylinder(d=ventd,h=z);
+		cylinder(d=ventd,h=z,$fn=6);
+		translate([pcbx*.6,0,0]) cylinder(d=ventd,h=z,$fn=6);
 	}
 }
 
@@ -98,11 +102,14 @@ module body() {
 			// main cavity
 			translate([w,0,-bz]) cube([pcbx-w*2, y, z]);
 
-			// pcb itself
-			translate([0,0,-pcbt/2]) cube([pcbx, y-ay, pcbt]);
+			// pcb itself, with a small stop tab
+			translate([0,0,-pcbt/2]) difference() {
+				cube([pcbx, y, pcbt]);
+				translate([0,y-ay,0]) cube([pcbx, 1, pcbt]);
+			}
 			
 			// ethernet cutout
-			translate([18.7,-w-0.1,pcbt/2]) cube([17, w*2, 15]);
+			translate([18.7,-w-0.1,pcbt/2]) cube([17, w*2, 14]);
 			
 			// usb cutout
 			translate([2.5,-w-0.1,0]) cube([13,w*5,6]);
@@ -129,11 +136,11 @@ module body() {
 		
 		// screw holes
 		for( v = screws ) {
-			translate([v[0],v[1],-bz-w]) screw(taper=1,clear=w+pcbt/2);
+			translate([v[0],v[1],-bz-pcbt]) screw(taper=1,clear=w+pcbt/2);
 		}
 
 		// vents
-		for( yy=[10:8:y-10] ) {
+		for( yy=[(screwheadd+ventd+w):8:y-(screwheadd+ventd+w)] ) {
 			translate([-w*2,yy,-bz/2-2]) scale([1,1,0.5]) vent();
 			translate([-w*2,yy,(z-bz)/2-w]) vent();
 			translate([pcbx*.3,yy,0]) vertvent();
@@ -185,16 +192,24 @@ module bottom() {
 		body();
 		union() {
 			translate([-x/2,-y/2,pcbt/2-z]) cube([x*2,y*2,z]);
-			alignment();
+			alignment(0.97);
 		}
 	}
 }
 
-translate([pcbx,0,0]) rotate([0,0,90]) color("green")
-	import("ESP32-Ethgate.stl");
+if( part == "all" ) {
+	translate([pcbx,0,0]) rotate([0,0,90]) color("green")
+		import("ESP32-Ethgate.stl");
 
-color("grey") translate([26+antennaod/2-(x-pcbx)/2,y-w*2,pcbt+1])
-				rotate([-90,0,0]) antenna();
+	color("grey") translate([26+antennaod/2-(x-pcbx)/2,y-w*2,pcbt+1])
+					rotate([-90,0,0]) antenna();
 
-translate([-(x-pcbx)/2,0,w]) top();
-translate([-(x-pcbx)/2,0,0]) bottom();
+	translate([-(x-pcbx)/2,0,w]) top();
+	translate([-(x-pcbx)/2,0,0]) bottom();
+} else if( part == "antenna" ) {
+	rotate([-90,0,0]) antenna();
+} else if( part == "top" ) {
+	rotate([-180,0,0]) top();
+} else if( part == "bottom" ) {
+	bottom();
+}
