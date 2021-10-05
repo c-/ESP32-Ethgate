@@ -10,7 +10,7 @@ QFN24 footprints and double-sided PCB's then you might be able to duplicate
 this. Or you can just order a PCB from pretty much anywhere.
 [I had a few made by Oshpark](https://oshpark.com/shared_projects/fb9Y2JDP).
 
-![Oshpark After Dark PCB](Pictures/Assembled-oshpark.jpg)
+![Oshpark After Dark PCB](Pictures/Assembled_oshpark.jpg)
 
 # Design
 
