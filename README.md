@@ -1,19 +1,46 @@
 # ESP32-Ethgate
 
-This is a basic ESP32 (ESP32-WROOM-32 module) with LAN8720A PHY project
-intended to work mostly as an ESP-NOW to (wired) MQTT gateway. CH340C-based
-USB is included.
+This is an ESP32 (ESP32-WROOM-32 module) with LAN8720A PHY project
+intended to be an ESP-NOW to (wired) MQTT gateway.
 
 ![Photo of working board](Pictures/ESP32-Ethgate.jpg)
 
-It designed to be produced in my PCB mill. If your PCB mill can handle
-QFN32 footprints and double-sided PCB's then you might be able to duplicate
-this.
+It was designed to be produced in my PCB mill. If your PCB mill can handle
+QFN24 footprints and double-sided PCB's then you might be able to duplicate
+this. Or you can just order a PCB from pretty much anywhere.
+[I had a few made by Oshpark](https://oshpark.com/shared_projects/fb9Y2JDP).
+
+![Oshpark After Dark PCB](Pictures/Assembled-oshpark.jpg)
+
+# Design
 
 For simplicity, it uses the GPIO17 PLL clock technique rather than
 the GPIO0-based crystal, and includes a second 3.3v regulator to control
-the entire ethernet power rail independently. It still needs USB power,
+the entire ethernet power rail independently. It needs stable USB power,
 although at some point I might take a stab at a PoE version.
+
+The CH340C runs off the first regulator along with the ESP32. The HT7233 is
+rated for 300mA, which is just marginal for an ESP32, but so far I haven't
+noticed any power issues (power consumption for the whole board averages
+maybe 250mA). I've thrown in some USB ESD protection, a fuse,
+and some reverse protection (I know that's not supposed to be a problem
+with USB... things happen, don't ask). ESD protection for the Ethernet
+port would be a nice-to-have at some point.
+
+The CH340C supports the usual auto-programming. Note that you'll 
+need to dial back the default upload baud rate.
+
+There aren't any frills like GPIO headers. This is a purpose-built design
+to scratch a particular itch and explore interfacing the ESP32 with an
+Ethernet PHY.
+
+# BOM
+
+Most of the components are from LCSC. There's an interactive BOM page
+which should tell you what you need. Passives are 0603 with a few
+0805 for the larger capacitors.
+
+# Firmware
 
 The Arduino-ESP32 ETH_LAN8720 sketch should work with the following
 configuration:
