@@ -30,9 +30,11 @@ port would be a nice-to-have at some point.
 The CH340C supports the usual auto-programming. Note that you'll 
 need to dial back the default upload baud rate.
 
-There aren't any frills like GPIO headers. This is a purpose-built design
-to scratch a particular itch and explore interfacing the ESP32 with an
-Ethernet PHY.
+I've added a small (1.25mm pitch) header with 3V3, GND, and two GPIO's
+to allow for things like environmental sensors. Note that temperature
+sensors will need to stay a minimum of 10cm off the board to avoid the heat
+thrown by this board. I've also broken out the USB interface with a small
+header because stuff... happened.
 
 # BOM
 
