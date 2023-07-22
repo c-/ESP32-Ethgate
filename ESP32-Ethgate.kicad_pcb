@@ -3594,7 +3594,7 @@
     (stroke (width 0.05) (type solid)) (layer "Edge.Cuts") (tstamp 54b49345-d004-4603-924d-bd6a13e03efe))
   (gr_line (start 67.31 60.96) (end 67.31 99.06)
     (stroke (width 0.05) (type solid)) (layer "Edge.Cuts") (tstamp 7b9712c4-fb11-4a55-a0d2-204784bbd6b0))
-  (gr_text "ESP32-Ethgate v2.3\ncperiod 2022" (at 110.007 63.7052) (layer "F.SilkS") (tstamp 00000000-0000-0000-0000-0000606b14a3)
+  (gr_text "ESP32-Ethgate v2.4\ncperiod 2022" (at 110.007 63.7052) (layer "F.SilkS") (tstamp 00000000-0000-0000-0000-0000606b14a3)
     (effects (font (size 1.5 1.5) (thickness 0.2)))
   )
   (gr_text "D+" (at 78.0542 70.6628) (layer "F.SilkS") (tstamp 04aed7cf-22c0-4506-90ff-733b6d093f68)
