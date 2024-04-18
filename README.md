@@ -8,7 +8,7 @@ intended to be an ESP-NOW to (wired) MQTT gateway.
 It was designed to be produced in my PCB mill. If your PCB mill can handle
 QFN24 footprints and double-sided PCB's then you might be able to duplicate
 this. Or you can just order a PCB from pretty much anywhere.
-[I had a few made by Oshpark](https://oshpark.com/shared_projects/fb9Y2JDP).
+[I had a few made by Oshpark](https://oshpark.com/shared_projects/cBIYloft).
 
 ![Oshpark After Dark PCB](Pictures/Assembled_oshpark.jpg)
 
