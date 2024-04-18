@@ -29,14 +29,14 @@ and some reverse protection (I know that's not supposed to be a problem
 with USB... things happen, don't ask). ESD protection for the Ethernet
 port would be a nice-to-have at some point.
 
-The CH340C supports the usual auto-programming. Note that you'll 
+The CH340C supports the usual auto-programming. Note that you *may* 
 need to dial back the default upload baud rate.
 
 I've added a small (1.25mm pitch) header with 3V3, GND, and two GPIO's
 to allow for things like environmental sensors. Note that temperature
 sensors will need to stay a minimum of 10cm off the board to avoid the heat
 thrown by this board. I've also broken out the USB interface with a small
-header because stuff... happened.
+header (uUSB connectors can be brittle pieces of junk).
 
 # BOM
 
