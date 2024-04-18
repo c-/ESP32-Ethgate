@@ -33,7 +33,7 @@ extern "C" {
 static WiFiClient ethClient;
 static MQTTClient client(512);
 static Ticker updater;
-static String nodeid("ethgate");
+static String nodeid("ethgate-");
 
 static bool eth_connected = false;
 static long lastrelayed = 0;
@@ -56,7 +56,8 @@ static void espnow_recv(const unsigned char* mac,
   
     led_on();
 
-    // FIXME: we should be putting this in a queue
+    // FIXME: we should be putting this in a queue, not sending
+    // in the receive callback.
     client.publish((char*)data, msg);
     client.loop();
   
@@ -89,28 +90,25 @@ static void initEspNow() {
 }
 
 void updateMessage() {
-#if 0
-  SnoutnetMessage msg;
-  msg.addInteger("relayed", relayed);
-  msg.addInteger("idle", (millis() - lastrelayed)/1000 );
-  msg.addInteger("uptime", millis()/1000);
-  if( has_eth ) {
-    msg.addString("ip", Ethernet.localIP().toString().c_str());
-  } else {
-    msg.addString("ip", WiFi.localIP().toString().c_str());
-    msg.addInteger("rssi", WiFi.RSSI());
-  }
+  if( !eth_connected ) return;
+
+  char msg[256];
+
+  snprintf(msg,sizeof(msg),
+    "{\"relayed\":%d,\"idle\":%d,\"ip\":\"%s\"}",
+    relayed, (millis()-lastrelayed)/1000,
+    ETH.localIP().toString().c_str() );
 
   String topic = "sensors/";
   topic += nodeid;
   topic += "/status";
-  client.publish(topic, msg.formatJSON());
+
+  client.publish(topic, msg);
   client.loop();
 
   Serial.print(topic);
   Serial.print(" ");
-  Serial.println(msg.formatJSON());
-#endif
+  Serial.println(msg);
 }
 
 void WiFiEvent(WiFiEvent_t event)
@@ -153,7 +151,8 @@ void WiFiEvent(WiFiEvent_t event)
 void setup()
 {
   pinMode(LED_BUILTIN,OUTPUT);
-  
+
+  // FIXME: format this as a hex string
   nodeid += (ESP.getEfuseMac()&0xffffff000000)>>24;
 
   Serial.begin(115200);
@@ -171,7 +170,6 @@ void setup()
   
   MDNS.begin(nodeid.c_str());
 
-  Serial.println("Connecting to MQTT");
   client.begin(MQTT_SERVER, 1883, ethClient);
   client.loop();
 
@@ -181,8 +179,9 @@ void setup()
 static long last_connect = 0;
 
 void loop() {
-  if( !client.connected() && millis()-last_connect>1000 ) {
-    client.connect(MQTT_USER,MQTT_PASS);
+  if( !client.connected() && millis()-last_connect>5000 ) {
+    Serial.println("(Re)connecting to MQTT");
+    client.connect(nodeid.c_str(),MQTT_USER,MQTT_PASS);
     last_connect = millis();
   }
 
