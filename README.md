@@ -12,6 +12,8 @@ this. Or you can just order a PCB from pretty much anywhere.
 
 ![Oshpark After Dark PCB](Pictures/Assembled_oshpark.jpg)
 
+![Oshpark After Dark PCB](Pictures/Assembled_oshpark_2.4.jpg)
+
 # Design
 
 For simplicity, it uses the GPIO17 PLL clock technique rather than
