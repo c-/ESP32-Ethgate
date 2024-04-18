@@ -1,4 +1,4 @@
-part = "all";	// [bottom, top, antenna]
+part = "antenna";	// [bottom, top, antenna]
 
 screwd = 3;
 screwheadd = 7;
@@ -45,8 +45,8 @@ module antenna(solid=0) {
 		union() {
 			translate([-antennaod/2,-antennaod/2,w*3+0.5])
 				scube([antennaod,antennaod,antennal],1);
-			cylinder(d=antennacd,h=w*3+1);
-			translate([-antennaod/2,-antennaod/2,0])
+			cylinder(d=antennaod,h=w*3+1);
+			*translate([-antennaod/2,-antennaod/2,0])
 				scube([antennaod,antennaod,w*2],1);
 		}
 		if( !solid ) {
