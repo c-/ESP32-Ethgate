@@ -30,7 +30,7 @@ extern "C" {
 #define ETH_MDC_PIN     23
 #define ETH_MDIO_PIN    18
 
-static EthernetClient ethClient;
+static WiFiClient ethClient;
 static MQTTClient client(512);
 static Ticker updater;
 static String nodeid("ethgate");
@@ -66,6 +66,7 @@ static void espnow_recv(const unsigned char* mac,
 
     lastrelayed = millis();
     relayed ++;
+
     led_off();
 }
 
@@ -88,6 +89,7 @@ static void initEspNow() {
 }
 
 void updateMessage() {
+#if 0
   SnoutnetMessage msg;
   msg.addInteger("relayed", relayed);
   msg.addInteger("idle", (millis() - lastrelayed)/1000 );
@@ -108,7 +110,7 @@ void updateMessage() {
   Serial.print(topic);
   Serial.print(" ");
   Serial.println(msg.formatJSON());
-
+#endif
 }
 
 void WiFiEvent(WiFiEvent_t event)
@@ -117,7 +119,7 @@ void WiFiEvent(WiFiEvent_t event)
     case ARDUINO_EVENT_ETH_START:
       Serial.println("ETH Started");
       //set eth hostname here
-      ETH.setHostname(nodeid);
+      ETH.setHostname(nodeid.c_str());
       break;
     case ARDUINO_EVENT_ETH_CONNECTED:
       Serial.println("ETH Connected");
@@ -150,15 +152,19 @@ void WiFiEvent(WiFiEvent_t event)
 
 void setup()
 {
-  nodeid += ESP.getEfuseMac()&0xffffff000000)>>24;
+  pinMode(LED_BUILTIN,OUTPUT);
+  
+  nodeid += (ESP.getEfuseMac()&0xffffff000000)>>24;
 
   Serial.begin(115200);
+
+  Serial.println(nodeid);
 
   initEspNow();
 
   WiFi.onEvent(WiFiEvent);
   ETH.begin(ETH_ADDR, ETH_POWER_PIN, ETH_MDC_PIN, ETH_MDIO_PIN,
-	  ETH_TYPE, ETH_CLK_MODE)
+	  ETH_TYPE, ETH_CLK_MODE);
 
   ArduinoOTA.setHostname(nodeid.c_str());
   ArduinoOTA.setPassword(OTA_PASSWORD);
