@@ -1,11 +1,11 @@
-part = "antenna";	// [bottom, top, antenna]
+part = "all";	// [bottom, top, antenna]
 
 screwd = 3;
 screwheadd = 7;
 w = 1.6;
-pcbx = 39;
+pcbx = 39.5;
 x = pcbx + screwheadd + w*2;
-ay = 8;
+ay = 9;
 y = 72.5 + ay;	// incl antenna
 z = 23;
 bz = 6;	// bottom height
