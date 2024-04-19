@@ -134,6 +134,8 @@ void WiFiEvent(WiFiEvent_t event)
       Serial.print(ETH.linkSpeed());
       Serial.println("Mbps");
       eth_connected = true;
+
+      ArduinoOTA.begin();
       break;
     case ARDUINO_EVENT_ETH_DISCONNECTED:
       Serial.println("ETH Disconnected");
@@ -152,8 +154,10 @@ void setup()
 {
   pinMode(LED_BUILTIN,OUTPUT);
 
-  // FIXME: format this as a hex string
-  nodeid += (ESP.getEfuseMac()&0xffffff000000)>>24;
+  {
+    char buf[16];
+    nodeid += itoa((ESP.getEfuseMac()&0xffffff000000)>>24,buf,16);
+  }
 
   Serial.begin(115200);
 
@@ -165,13 +169,13 @@ void setup()
   ETH.begin(ETH_ADDR, ETH_POWER_PIN, ETH_MDC_PIN, ETH_MDIO_PIN,
 	  ETH_TYPE, ETH_CLK_MODE);
 
+  client.begin(MQTT_SERVER, 1883, ethClient);
+  client.loop();
+
   ArduinoOTA.setHostname(nodeid.c_str());
   ArduinoOTA.setPassword(OTA_PASSWORD);
   
   MDNS.begin(nodeid.c_str());
-
-  client.begin(MQTT_SERVER, 1883, ethClient);
-  client.loop();
 
   updater.attach(60, updateMessage);
 }
@@ -185,6 +189,7 @@ void loop() {
     last_connect = millis();
   }
 
+  ArduinoOTA.handle();
   client.loop();
 
   delay(1);
